@@ -34,6 +34,11 @@ Default draft output location:
 - `~/.openclaw/skills-drafts/<slug>/SKILL.md`
 - `~/.openclaw/skills-drafts/<slug>/draft-metadata.json`
 
+## Deduplication
+- identical draft description + steps generate the same fingerprint
+- repeated generation of the same draft is skipped by default
+- use `--allow-overwrite` if you intentionally want to refresh an existing draft
+
 ## Example: promote a reviewed draft
 
 ```bash

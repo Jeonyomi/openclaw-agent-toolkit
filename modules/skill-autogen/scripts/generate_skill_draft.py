@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -63,6 +64,11 @@ def build_skill_md(name: str, description: str, triggers: list[str], steps: list
     return "\n".join(lines) + "\n"
 
 
+def fingerprint(description: str, steps: list[str]) -> str:
+    payload = json.dumps({"description": description, "steps": steps}, ensure_ascii=False, sort_keys=True)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate a local-only draft SKILL.md from solved-problem notes.")
     parser.add_argument("--name", required=True)
@@ -71,38 +77,49 @@ def main() -> int:
     parser.add_argument("--step", action="append", default=[])
     parser.add_argument("--caution", action="append", default=[])
     parser.add_argument("--output-dir", default="")
+    parser.add_argument("--allow-overwrite", action="store_true")
     args = parser.parse_args()
 
     raw_fields = [args.name, args.description, *args.trigger, *args.step, *args.caution]
     if any(looks_secret(v) for v in raw_fields):
         raise SystemExit("refusing to generate skill draft because secret-like text was detected")
 
-    slug = slugify(args.name)
+    name = args.name.strip()
+    description = re.sub(r"\s+", " ", args.description).strip()
+    triggers = normalize_lines(args.trigger)
+    steps = normalize_lines(args.step)
+    cautions = normalize_lines(args.caution)
+
+    slug = slugify(name)
     base = Path(args.output_dir) if args.output_dir else Path.home() / ".openclaw" / "skills-drafts"
     target_dir = base / slug
     target_dir.mkdir(parents=True, exist_ok=True)
 
-    skill_md = build_skill_md(
-        name=args.name.strip(),
-        description=re.sub(r"\s+", " ", args.description).strip(),
-        triggers=normalize_lines(args.trigger),
-        steps=normalize_lines(args.step),
-        cautions=normalize_lines(args.caution),
-    )
-
+    fp = fingerprint(description, steps)
     skill_path = target_dir / "SKILL.md"
     metadata_path = target_dir / "draft-metadata.json"
 
+    if metadata_path.exists() and not args.allow_overwrite:
+        try:
+            old = json.loads(metadata_path.read_text(encoding="utf-8"))
+            if old.get("fingerprint") == fp:
+                print(f"duplicate-draft-skip: {metadata_path}")
+                return 0
+        except Exception:
+            pass
+
+    skill_md = build_skill_md(name=name, description=description, triggers=triggers, steps=steps, cautions=cautions)
     skill_path.write_text(skill_md, encoding="utf-8")
     metadata = {
-        "name": args.name.strip(),
+        "name": name,
         "slug": slug,
-        "description": re.sub(r"\s+", " ", args.description).strip(),
-        "triggers": normalize_lines(args.trigger),
-        "steps": normalize_lines(args.step),
-        "cautions": normalize_lines(args.caution),
+        "description": description,
+        "triggers": triggers,
+        "steps": steps,
+        "cautions": cautions,
         "generatedAt": dt.datetime.now().isoformat(),
         "status": "draft",
+        "fingerprint": fp,
     }
     metadata_path.write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8")
 
