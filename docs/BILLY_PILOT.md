@@ -51,6 +51,43 @@ python scripts/billy_pilot_capture.py \
 3. Review generated draft before promotion
 4. Keep promotion manual
 5. Run validation before promoting draft skills
+6. Keep durable memory factual and long-lived; do not store transient progress logs or TODO state
+7. Put reusable procedures and runbooks into skill drafts rather than memory
+
+## Recommended operational loop for Billy
+
+After meaningful work:
+
+1. **If the outcome is a durable fact** → use `memory-capture`
+2. **If the outcome is a repeatable workflow** → add `skill-draft` or `skill-refresh`
+3. **If curated memory candidates have accumulated** → review with `recall-candidate` preview first, then `--apply`
+4. **Before promoting any draft** → run validation
+
+### Examples
+
+Preview curated memory candidates:
+
+```bash
+python toolkit.py recall-candidate --candidate-file modules/persistent-memory/output/curated-memory-candidate-YYYY-MM-DD.md
+```
+
+Apply curated memory candidates into workspace memory files:
+
+```bash
+python toolkit.py recall-candidate \
+  --candidate-file modules/persistent-memory/output/curated-memory-candidate-YYYY-MM-DD.md \
+  --memory-md ~/.openclaw/workspace/MEMORY.md \
+  --daily-memory ~/.openclaw/workspace/memory/YYYY-MM-DD.md \
+  --apply
+```
+
+Refresh an existing skill with a new lesson:
+
+```bash
+python toolkit.py skill-refresh \
+  --skill-file ~/.openclaw/workspace/skills/openclaw-recovery/SKILL.md \
+  --lesson "Prefer service-based gateway restart as the default path unless a narrower recovery step is explicitly required"
+```
 
 ## Suggested pilot duration
 - 1 to 2 weeks

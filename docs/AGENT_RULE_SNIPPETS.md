@@ -41,6 +41,9 @@ When a meaningful task is completed, the agent should normally do both of the fo
 - add a skill draft only when repetition value is clear
 - keep promotion manual
 - if uncertain, skip skill draft and keep only memory capture
+- durable memory should be factual and long-lived
+- transient progress logs, blockers, and TODOs should stay out of durable memory
+- procedures and runbooks should become skill drafts rather than memory entries
 ```
 
 ---
@@ -59,6 +62,14 @@ python toolkit.py memory-capture --type decision --text "..." --source "agent pi
 
 ```bash
 python scripts/post_task_capture.py --memory-type lesson --memory-text "..." --source "agent pilot"
+```
+
+```bash
+python toolkit.py skill-refresh --skill-file ~/.openclaw/skills/some-skill/SKILL.md --lesson "..."
+```
+
+```bash
+python toolkit.py recall-candidate --candidate-file modules/persistent-memory/output/curated-memory-candidate-YYYY-MM-DD.md
 ```
 ```
 
