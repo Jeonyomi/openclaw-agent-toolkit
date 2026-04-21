@@ -60,6 +60,7 @@ On another PC:
 2. run `python scripts/bootstrap_local_layout.py`
 3. review local config files
 4. use `toolkit.py` or `scripts/post_task_capture.py` as needed
+5. copy the generic integration rules from `docs/AGENT_RULE_SNIPPETS.md` into the local agent instruction files if you want behavior-level integration
 
 ## Security note
 

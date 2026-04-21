@@ -65,3 +65,10 @@ python scripts/billy_pilot_capture.py \
 ```bash
 python scripts/validate_toolkit_outputs.py
 ```
+
+## Reuse on another PC
+
+If another OpenClaw agent should follow the same pattern, use the generic snippets in:
+- `docs/AGENT_RULE_SNIPPETS.md`
+
+For non-Billy agents, prefer the generic toolkit rules rather than Billy-specific wording.

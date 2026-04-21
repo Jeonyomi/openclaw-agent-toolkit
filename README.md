@@ -60,6 +60,7 @@ See also:
 - `docs/WORKFLOW.md`
 - `docs/QUALITY.md`
 - `docs/BILLY_PILOT.md`
+- `docs/AGENT_RULE_SNIPPETS.md`
 
 ## Current modules
 
@@ -146,6 +147,7 @@ openclaw-agent-toolkit/
       prompts/
       scripts/
   docs/
+    AGENT_RULE_SNIPPETS.md
     BILLY_PILOT.md
     SECURITY.md
     INSTALL.md
@@ -180,6 +182,7 @@ openclaw-agent-toolkit/
 - workflow guidance
 - lightweight quality safeguards
 - Billy pilot helper
+- reusable agent rule snippets for other PCs/agents
 
 ### Phase 3
 - richer review helpers
@@ -198,3 +201,4 @@ This repo now contains working local-safe MVPs for:
 - post-task workflow helper
 - lightweight validation and draft dedupe
 - Billy pilot helper and pilot guidance
+- reusable generic rule snippets for other OpenClaw agents
