@@ -61,6 +61,7 @@ See also:
 - `docs/QUALITY.md`
 - `docs/BILLY_PILOT.md`
 - `docs/AGENT_RULE_SNIPPETS.md`
+- `docs/HERMES_AGENT_REVIEW.md`
 
 ## Current modules
 

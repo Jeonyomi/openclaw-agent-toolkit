@@ -79,3 +79,12 @@ Best for:
 - memory capture can be frequent
 - skill draft generation should be selective
 - promotion should remain manual
+
+## Hermes-aligned guardrails
+- durable memory should be factual, compact, and long-lived
+- procedures/workflows should become skill drafts, not memory entries
+- task progress, temporary blockers, and one-off execution logs should stay in session history or daily notes
+- if a draft skill proves incomplete during real use, patch/regenerate it before promotion
+
+See also:
+- `docs/HERMES_AGENT_REVIEW.md`

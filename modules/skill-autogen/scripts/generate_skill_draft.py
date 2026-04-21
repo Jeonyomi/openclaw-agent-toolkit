@@ -24,48 +24,121 @@ def slugify(text: str) -> str:
     return text.strip("-") or "untitled-skill"
 
 
+def _split_compound(value: str) -> list[str]:
+    value = re.sub(r"\s+", " ", value).strip()
+    if not value:
+        return []
+    if "," in value and not re.search(r"https?://", value):
+        parts = [v.strip() for v in value.split(",") if v.strip()]
+        if len(parts) > 1:
+            return parts
+    return [value]
+
+
 def normalize_lines(values: list[str]) -> list[str]:
-    out = []
+    out: list[str] = []
     for v in values:
-        s = re.sub(r"\s+", " ", v).strip()
-        if s:
-            out.append(s)
+        for piece in _split_compound(v):
+            s = re.sub(r"\s+", " ", piece).strip(" -")
+            if s and s not in out:
+                out.append(s)
     return out
 
 
-def build_skill_md(name: str, description: str, triggers: list[str], steps: list[str], cautions: list[str]) -> str:
-    trigger_text = "; ".join(triggers) if triggers else "Use when the same operational pattern is likely to recur."
-    lines = [
+def ensure_sentence(text: str) -> str:
+    text = text.strip()
+    if not text:
+        return text
+    if text.endswith((".", "!", "?")):
+        return text
+    return text + "."
+
+
+def build_skill_md(
+    name: str,
+    description: str,
+    triggers: list[str],
+    steps: list[str],
+    cautions: list[str],
+    validations: list[str],
+    source: str,
+) -> str:
+    frontmatter = [
         "---",
         f"name: {name}",
         f"description: {description}",
-        "---",
+        "status: draft",
+        f"generated_at: {dt.datetime.now().isoformat()}",
+    ]
+    if triggers:
+        frontmatter.append("triggers:")
+        frontmatter.extend([f"  - {t}" for t in triggers])
+    if source:
+        frontmatter.append(f"source: {source}")
+    frontmatter.append("---")
+
+    lines = [
+        *frontmatter,
         "",
         f"# {name}",
         "",
         "## When to use",
-        f"- {trigger_text}",
+    ]
+    if triggers:
+        lines.extend([f"- {ensure_sentence(t)}" for t in triggers])
+    else:
+        lines.append("- Use when the same operational pattern is likely to recur.")
+
+    lines.extend([
         "",
         "## Steps",
-    ]
+    ])
     if steps:
-        lines.extend([f"{idx+1}. {step}" for idx, step in enumerate(steps)])
+        lines.extend([f"{idx+1}. {ensure_sentence(step)}" for idx, step in enumerate(steps)])
     else:
         lines.append("1. Review the recurring workflow and apply it carefully.")
-    lines.append("")
-    lines.append("## Cautions")
+
+    lines.extend([
+        "",
+        "## Validation",
+    ])
+    if validations:
+        lines.extend([f"- {ensure_sentence(v)}" for v in validations])
+    else:
+        lines.append("- Confirm the workflow actually solved the problem before promoting this draft.")
+
+    lines.extend([
+        "",
+        "## Cautions",
+    ])
     if cautions:
-        lines.extend([f"- {c}" for c in cautions])
+        lines.extend([f"- {ensure_sentence(c)}" for c in cautions])
     else:
         lines.append("- Review for secrets or machine-specific details before promoting this draft.")
-    lines.append("")
-    lines.append("## Status")
-    lines.append("- Draft only. Manual review required before promotion to a live skill.")
+
+    lines.extend([
+        "",
+        "## Status",
+        "- Draft only. Manual review required before promotion to a live skill.",
+        "",
+        "## Maintenance notes",
+        "- If future runs reveal missing steps, patch the draft before promotion.",
+    ])
     return "\n".join(lines) + "\n"
 
 
-def fingerprint(description: str, steps: list[str]) -> str:
-    payload = json.dumps({"description": description, "steps": steps}, ensure_ascii=False, sort_keys=True)
+def fingerprint(description: str, steps: list[str], triggers: list[str], cautions: list[str], validations: list[str]) -> str:
+    payload = json.dumps(
+        {
+            "description": description,
+            "steps": steps,
+            "triggers": triggers,
+            "cautions": cautions,
+            "validations": validations,
+        },
+        ensure_ascii=False,
+        sort_keys=True,
+    )
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
@@ -76,26 +149,30 @@ def main() -> int:
     parser.add_argument("--trigger", action="append", default=[])
     parser.add_argument("--step", action="append", default=[])
     parser.add_argument("--caution", action="append", default=[])
+    parser.add_argument("--validation", action="append", default=[])
+    parser.add_argument("--source", default="")
     parser.add_argument("--output-dir", default="")
     parser.add_argument("--allow-overwrite", action="store_true")
     args = parser.parse_args()
 
-    raw_fields = [args.name, args.description, *args.trigger, *args.step, *args.caution]
+    raw_fields = [args.name, args.description, args.source, *args.trigger, *args.step, *args.caution, *args.validation]
     if any(looks_secret(v) for v in raw_fields):
         raise SystemExit("refusing to generate skill draft because secret-like text was detected")
 
     name = args.name.strip()
     description = re.sub(r"\s+", " ", args.description).strip()
+    source = re.sub(r"\s+", " ", args.source).strip()
     triggers = normalize_lines(args.trigger)
     steps = normalize_lines(args.step)
     cautions = normalize_lines(args.caution)
+    validations = normalize_lines(args.validation)
 
     slug = slugify(name)
     base = Path(args.output_dir) if args.output_dir else Path.home() / ".openclaw" / "skills-drafts"
     target_dir = base / slug
     target_dir.mkdir(parents=True, exist_ok=True)
 
-    fp = fingerprint(description, steps)
+    fp = fingerprint(description, steps, triggers, cautions, validations)
     skill_path = target_dir / "SKILL.md"
     metadata_path = target_dir / "draft-metadata.json"
 
@@ -108,7 +185,15 @@ def main() -> int:
         except Exception:
             pass
 
-    skill_md = build_skill_md(name=name, description=description, triggers=triggers, steps=steps, cautions=cautions)
+    skill_md = build_skill_md(
+        name=name,
+        description=description,
+        triggers=triggers,
+        steps=steps,
+        cautions=cautions,
+        validations=validations,
+        source=source,
+    )
     skill_path.write_text(skill_md, encoding="utf-8")
     metadata = {
         "name": name,
@@ -117,6 +202,8 @@ def main() -> int:
         "triggers": triggers,
         "steps": steps,
         "cautions": cautions,
+        "validations": validations,
+        "source": source,
         "generatedAt": dt.datetime.now().isoformat(),
         "status": "draft",
         "fingerprint": fp,

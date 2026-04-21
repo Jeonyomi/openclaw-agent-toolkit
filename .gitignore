@@ -8,6 +8,7 @@ skills-drafts/
 output/
 reports/
 logs/
+tmp-*/
 
 # Secrets / env
 .env

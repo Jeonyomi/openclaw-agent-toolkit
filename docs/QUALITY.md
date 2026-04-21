@@ -21,8 +21,12 @@ python scripts/validate_toolkit_outputs.py
 Checks include:
 - secret-like text in draft skills
 - secret-like text in memory markdown outputs
+- imperative / directive-style memory entries
+- transient progress-log style memory entries
 - missing `draft-metadata.json`
 - missing draft fingerprint
+- missing required skill sections (`When to use`, `Steps`, `Validation`, `Cautions`)
+- malformed comma-joined skill steps that should be split
 - missing draft status note in `SKILL.md`
 
 ## Practical recommendation
