@@ -16,6 +16,25 @@ The design assumes:
 - No secrets should be committed to git
 - The same toolkit should be usable by Billy, Delly, or future agents on multiple PCs
 
+## Quick start
+
+### Capture durable memory
+```bash
+python toolkit.py memory-capture --type decision --text "Prefer service-based gateway restart" --source "OpenClaw recovery"
+```
+
+### Generate a draft skill
+```bash
+python toolkit.py skill-draft --name "openclaw-recovery" --description "Recovery workflow for Billy/Delly" --step "Check openclaw.json" --step "Restart gateway"
+```
+
+### Promote a reviewed draft
+```bash
+python toolkit.py skill-promote --slug openclaw-recovery
+```
+
+See also: `docs/QUICKSTART.md`
+
 ## Current modules
 
 ### 1. persistent-memory
@@ -102,6 +121,8 @@ openclaw-agent-toolkit/
     SECURITY.md
     INSTALL.md
     OPERATING_MODEL.md
+    QUICKSTART.md
+  toolkit.py
   .gitignore
 ```
 
@@ -117,6 +138,7 @@ openclaw-agent-toolkit/
 - persistent memory helper implementation
 - skill draft generator implementation
 - manual promotion helper
+- practical wrapper flow
 
 ### Phase 3
 - local review helpers
@@ -129,3 +151,4 @@ This repo now contains working local-safe MVPs for:
 - persistent memory draft capture
 - skill draft generation
 - manual skill draft promotion
+- simple wrapper-based usage flow
