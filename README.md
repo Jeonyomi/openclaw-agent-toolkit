@@ -18,22 +18,30 @@ The design assumes:
 
 ## Quick start
 
-### Capture durable memory
+### 1. Bootstrap local layout
+```bash
+python scripts/bootstrap_local_layout.py
+```
+
+### 2. Capture durable memory
 ```bash
 python toolkit.py memory-capture --type decision --text "Prefer service-based gateway restart" --source "OpenClaw recovery"
 ```
 
-### Generate a draft skill
+### 3. Generate a draft skill
 ```bash
 python toolkit.py skill-draft --name "openclaw-recovery" --description "Recovery workflow for Billy/Delly" --step "Check openclaw.json" --step "Restart gateway"
 ```
 
-### Promote a reviewed draft
+### 4. Promote a reviewed draft
 ```bash
 python toolkit.py skill-promote --slug openclaw-recovery
 ```
 
-See also: `docs/QUICKSTART.md`
+See also:
+- `docs/QUICKSTART.md`
+- `docs/INSTALL.md`
+- `docs/INTEGRATION.md`
 
 ## Current modules
 
@@ -68,7 +76,7 @@ The toolkit only works with:
 On each machine:
 
 - clone this repo anywhere convenient
-- symlink or copy selected modules into `~/.openclaw/extensions/`
+- keep runtime state under `~/.openclaw/`
 - keep machine-local config outside git
 
 Suggested layout:
@@ -81,6 +89,8 @@ Suggested layout:
   local-config/
     persistent-memory.local.json
     skill-autogen.local.json
+  skills-drafts/
+  skills/
 ```
 
 ## Important design rules
@@ -120,8 +130,11 @@ openclaw-agent-toolkit/
   docs/
     SECURITY.md
     INSTALL.md
+    INTEGRATION.md
     OPERATING_MODEL.md
     QUICKSTART.md
+  scripts/
+    bootstrap_local_layout.py
   toolkit.py
   .gitignore
 ```
@@ -139,6 +152,7 @@ openclaw-agent-toolkit/
 - skill draft generator implementation
 - manual promotion helper
 - practical wrapper flow
+- local bootstrap/install flow
 
 ### Phase 3
 - local review helpers
@@ -152,3 +166,4 @@ This repo now contains working local-safe MVPs for:
 - skill draft generation
 - manual skill draft promotion
 - simple wrapper-based usage flow
+- local multi-PC bootstrap/install flow
