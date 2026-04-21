@@ -2,80 +2,220 @@
 
 Reusable local toolkit for OpenClaw agents across multiple PCs.
 
-## Goals
+## What this repo does
 
-This repo is designed to provide **portable, update-independent agent enhancements** for OpenClaw, with a strong focus on:
+This repo provides **portable, update-independent agent enhancements** for OpenClaw with a strong focus on:
 
-1. **Persistent memory helpers**
-2. **Automatic skill-draft generation after problem solving**
+1. **Durable memory capture**
+2. **Draft skill generation and refresh**
 3. **Manual promotion workflow for safe skill activation**
+4. **Local-first operations that keep sensitive state out of git**
 
-The design assumes:
-- OpenClaw core should remain untouched
-- The toolkit should live under `~/.openclaw/` or a separate workspace clone
-- No secrets should be committed to git
-- The same toolkit should be usable by Billy, Delly, or future agents on multiple PCs
+The intended design is:
+- OpenClaw core remains untouched
+- the toolkit lives in its own repo or under `~/.openclaw/`
+- generated outputs stay local by default
+- the same toolkit can be reused by Billy, Delly, or other agents on multiple PCs
+
+## Current status
+
+This repo now contains working local-safe flows for:
+- durable memory draft capture
+- curated memory candidate review/apply flow
+- draft skill generation
+- existing skill refresh draft generation
+- manual draft promotion
+- validation and lightweight quality checks
+- Billy pilot helper and generic agent rule snippets
+- local bootstrap/install flow for other PCs
+
+## Core idea: memory vs skill vs recall
+
+This toolkit now follows a Hermes-inspired split:
+
+- **Memory** = durable facts worth keeping across sessions
+  - decisions
+  - preferences
+  - stable project state
+  - repeatable lessons
+- **Skill** = reusable procedure or runbook
+  - recovery workflows
+  - repo workflows
+  - scheduler/deployment checklists
+  - operational playbooks
+- **Recall / review** = candidate promotion step
+  - review curated memory candidates before applying them to long-term workspace memory
+
+That means:
+- transient progress logs should **not** go into durable memory
+- TODOs/blockers should **not** go into durable memory
+- reusable procedures should usually become **skill drafts**, not memory entries
 
 ## Quick start
 
 ### 1. Bootstrap local layout
+
 ```bash
 python scripts/bootstrap_local_layout.py
 ```
 
 ### 2. Capture durable memory
+
 ```bash
-python toolkit.py memory-capture --type decision --text "Prefer service-based gateway restart" --source "OpenClaw recovery"
+python toolkit.py memory-capture \
+  --type decision \
+  --text "Prefer service-based gateway restart for OpenClaw recovery" \
+  --source "OpenClaw recovery work"
 ```
 
 ### 3. Generate a draft skill
+
 ```bash
-python toolkit.py skill-draft --name "openclaw-recovery" --description "Recovery workflow for Billy/Delly" --step "Check openclaw.json" --step "Restart gateway"
+python toolkit.py skill-draft \
+  --name "openclaw-recovery" \
+  --description "Recovery workflow for Billy/Delly after reinstall or broken gateway state" \
+  --trigger "Use when Billy or Delly stops responding after install or update" \
+  --step "Check openclaw.json" \
+  --step "Restart gateway" \
+  --step "Verify both Telegram accounts"
 ```
 
-### 4. Promote a reviewed draft
+### 4. Refresh an existing skill with new lessons
+
 ```bash
-python toolkit.py skill-promote --slug openclaw-recovery
+python toolkit.py skill-refresh \
+  --skill-file ~/.openclaw/skills/openclaw-recovery/SKILL.md \
+  --lesson "Prefer service-based gateway restart as the default path unless a narrower recovery step is explicitly required"
 ```
 
-### 5. Validate local outputs before promotion
+### 5. Preview curated memory candidates
+
+```bash
+python toolkit.py recall-candidate \
+  --candidate-file modules/persistent-memory/output/curated-memory-candidate-YYYY-MM-DD.md
+```
+
+### 6. Apply curated memory candidates into workspace memory files
+
+```bash
+python toolkit.py recall-candidate \
+  --candidate-file modules/persistent-memory/output/curated-memory-candidate-YYYY-MM-DD.md \
+  --memory-md ~/.openclaw/workspace/MEMORY.md \
+  --daily-memory ~/.openclaw/workspace/memory/YYYY-MM-DD.md \
+  --apply
+```
+
+### 7. Validate local outputs before promotion
+
 ```bash
 python scripts/validate_toolkit_outputs.py
 ```
 
-### 6. Billy pilot helper
+### 8. Promote a reviewed draft skill
+
 ```bash
-python scripts/billy_pilot_capture.py --kind decision --text "Use service-based gateway restart" --source "Billy pilot"
+python toolkit.py skill-promote --slug openclaw-recovery
 ```
 
-### 7. Use post-task capture when both memory and skill draft are useful
+### 9. Billy pilot helper
+
 ```bash
-python scripts/post_task_capture.py --memory-type lesson --memory-text "Service-based gateway restart is the safer default recovery path" --source "OpenClaw recovery task"
+python scripts/billy_pilot_capture.py \
+  --kind decision \
+  --text "Use service-based gateway restart" \
+  --source "Billy pilot"
 ```
 
-See also:
-- `docs/QUICKSTART.md`
-- `docs/INSTALL.md`
-- `docs/INTEGRATION.md`
-- `docs/WORKFLOW.md`
-- `docs/QUALITY.md`
-- `docs/BILLY_PILOT.md`
+## Recommended usage flow after meaningful work
+
+After a meaningful task is completed:
+
+1. **If the outcome is a durable fact** → use `memory-capture`
+2. **If the outcome is a repeatable workflow** → use `skill-draft` or `skill-refresh`
+3. **If curated memory candidates have accumulated** → review with `recall-candidate`, then `--apply`
+4. **Before promoting draft skills** → run validation
+5. **Promotion stays manual**
+
+## For other people / another PC
+
+If you want to use this repo on another PC or with another OpenClaw agent:
+
+### Setup steps
+
+1. Clone the repo
+2. Review `docs/SECURITY.md`
+3. Run:
+
+```bash
+python scripts/bootstrap_local_layout.py
+```
+
+4. Review the generated local config files:
+- `~/.openclaw/local-config/persistent-memory.local.json`
+- `~/.openclaw/local-config/skill-autogen.local.json`
+
+5. Keep generated outputs local:
+- `~/.openclaw/workspace/MEMORY.md`
+- `~/.openclaw/workspace/memory/*.md`
+- `~/.openclaw/skills-drafts/*`
+
+6. Copy the generic agent snippets from:
 - `docs/AGENT_RULE_SNIPPETS.md`
-- `docs/HERMES_AGENT_REVIEW.md`
 
-## Current modules
+into your local agent instructions if you want behavior-level integration.
 
-### 1. persistent-memory
-Purpose:
-- help record durable memories after sessions/tasks
-- separate raw daily memory from curated long-term memory
-- keep memory operations file-based and portable
+### Minimal usage pattern
 
-### 2. skill-autogen
-Purpose:
-- generate draft `SKILL.md` files after repeated or high-value problem solving
-- create draft-only outputs first
-- require manual promotion before activating skills
+For a generic OpenClaw agent on another machine:
+
+```bash
+python toolkit.py memory-capture --type decision --text "..." --source "agent pilot"
+```
+
+```bash
+python toolkit.py skill-draft --name "some-workflow" --description "..." --step "..."
+```
+
+```bash
+python toolkit.py skill-refresh --skill-file ~/.openclaw/skills/some-skill/SKILL.md --lesson "..."
+```
+
+```bash
+python toolkit.py recall-candidate --candidate-file modules/persistent-memory/output/curated-memory-candidate-YYYY-MM-DD.md
+```
+
+```bash
+python scripts/validate_toolkit_outputs.py
+```
+
+## Command reference
+
+### Memory flows
+- `toolkit.py memory-capture`
+  - create daily + curated memory candidates
+  - rejects secret-like text
+  - now rejects procedural/transient memory by default
+- `toolkit.py recall-candidate`
+  - preview curated memory candidates
+  - optionally apply reviewed candidates into workspace memory files
+
+### Skill flows
+- `toolkit.py skill-draft`
+  - generate a new local draft skill
+- `toolkit.py skill-refresh`
+  - generate a refreshed draft from an existing skill + new lessons
+- `toolkit.py skill-promote`
+  - manually promote a reviewed draft into live skills
+
+### Helpers
+- `scripts/post_task_capture.py`
+  - capture memory first, then optional skill draft
+- `scripts/billy_pilot_capture.py`
+  - Billy-friendly wrapper over post-task capture
+- `scripts/validate_toolkit_outputs.py`
+  - check for obvious quality/safety problems before promotion
+- `scripts/bootstrap_local_layout.py`
+  - prepare local folders + example config files under `~/.openclaw/`
 
 ## Security model
 
@@ -93,12 +233,6 @@ The toolkit only works with:
 
 ## Recommended install layout
 
-On each machine:
-
-- clone this repo anywhere convenient
-- keep runtime state under `~/.openclaw/`
-- keep machine-local config outside git
-
 Suggested layout:
 
 ```text
@@ -111,6 +245,9 @@ Suggested layout:
     skill-autogen.local.json
   skills-drafts/
   skills/
+  workspace/
+    MEMORY.md
+    memory/
 ```
 
 ## Important design rules
@@ -142,14 +279,20 @@ openclaw-agent-toolkit/
       config.example.json
       prompts/
       scripts/
+        memory_capture.py
+        recall_candidate.py
     skill-autogen/
       README.md
       config.example.json
       prompts/
       scripts/
+        generate_skill_draft.py
+        refresh_skill_draft.py
+        promote_skill_draft.py
   docs/
     AGENT_RULE_SNIPPETS.md
     BILLY_PILOT.md
+    HERMES_AGENT_REVIEW.md
     SECURITY.md
     INSTALL.md
     INTEGRATION.md
@@ -166,40 +309,26 @@ openclaw-agent-toolkit/
   .gitignore
 ```
 
-## Roadmap
+## Documentation map
 
-### Phase 1
-- portable repo skeleton
-- security baseline
-- install model
-- module boundaries
+See also:
+- `docs/QUICKSTART.md`
+- `docs/INSTALL.md`
+- `docs/INTEGRATION.md`
+- `docs/WORKFLOW.md`
+- `docs/QUALITY.md`
+- `docs/BILLY_PILOT.md`
+- `docs/AGENT_RULE_SNIPPETS.md`
+- `docs/HERMES_AGENT_REVIEW.md`
+- `docs/RECENT_UPDATES.md`
+- `docs/SECURITY.md`
 
-### Phase 2
-- persistent memory helper implementation
-- skill draft generator implementation
-- manual promotion helper
-- practical wrapper flow
-- local bootstrap/install flow
-- workflow guidance
-- lightweight quality safeguards
-- Billy pilot helper
-- reusable agent rule snippets for other PCs/agents
+## Recent updates
 
-### Phase 3
-- richer review helpers
-- stronger dedupe and ranking
-- optional wrappers/hooks for practical OpenClaw workflows
-- Delly pilot helper
-
-## Status
-
-This repo now contains working local-safe MVPs for:
-- persistent memory draft capture
-- skill draft generation
-- manual skill draft promotion
-- simple wrapper-based usage flow
-- local multi-PC bootstrap/install flow
-- post-task workflow helper
-- lightweight validation and draft dedupe
-- Billy pilot helper and pilot guidance
-- reusable generic rule snippets for other OpenClaw agents
+Recent improvements added in the Hermes-inspired upgrade pass:
+- stricter separation between durable memory and procedural skills
+- `recall-candidate` for curated memory review/apply
+- `skill-refresh` for evolving live skills via new lessons
+- richer skill draft structure with validation + maintenance notes
+- stronger validation for imperative/transient memory and malformed draft steps
+- clearer Billy operating loop and reusable agent snippets for other PCs
