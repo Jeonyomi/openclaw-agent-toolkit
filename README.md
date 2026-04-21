@@ -43,7 +43,12 @@ python toolkit.py skill-promote --slug openclaw-recovery
 python scripts/validate_toolkit_outputs.py
 ```
 
-### 6. Use post-task capture when both memory and skill draft are useful
+### 6. Billy pilot helper
+```bash
+python scripts/billy_pilot_capture.py --kind decision --text "Use service-based gateway restart" --source "Billy pilot"
+```
+
+### 7. Use post-task capture when both memory and skill draft are useful
 ```bash
 python scripts/post_task_capture.py --memory-type lesson --memory-text "Service-based gateway restart is the safer default recovery path" --source "OpenClaw recovery task"
 ```
@@ -54,6 +59,7 @@ See also:
 - `docs/INTEGRATION.md`
 - `docs/WORKFLOW.md`
 - `docs/QUALITY.md`
+- `docs/BILLY_PILOT.md`
 
 ## Current modules
 
@@ -140,6 +146,7 @@ openclaw-agent-toolkit/
       prompts/
       scripts/
   docs/
+    BILLY_PILOT.md
     SECURITY.md
     INSTALL.md
     INTEGRATION.md
@@ -148,6 +155,7 @@ openclaw-agent-toolkit/
     QUALITY.md
     WORKFLOW.md
   scripts/
+    billy_pilot_capture.py
     bootstrap_local_layout.py
     post_task_capture.py
     validate_toolkit_outputs.py
@@ -171,11 +179,13 @@ openclaw-agent-toolkit/
 - local bootstrap/install flow
 - workflow guidance
 - lightweight quality safeguards
+- Billy pilot helper
 
 ### Phase 3
 - richer review helpers
 - stronger dedupe and ranking
 - optional wrappers/hooks for practical OpenClaw workflows
+- Delly pilot helper
 
 ## Status
 
@@ -187,3 +197,4 @@ This repo now contains working local-safe MVPs for:
 - local multi-PC bootstrap/install flow
 - post-task workflow helper
 - lightweight validation and draft dedupe
+- Billy pilot helper and pilot guidance

@@ -35,9 +35,9 @@ Use:
 python toolkit.py skill-promote --slug <slug>
 ```
 
-## Practical shortcut
+## Practical shortcuts
 
-A post-task helper is included:
+### Generic post-task helper
 
 ```bash
 python scripts/post_task_capture.py \
@@ -49,6 +49,15 @@ python scripts/post_task_capture.py \
   --skill-step "Check openclaw.json" \
   --skill-step "Restart gateway" \
   --skill-step "Verify both Telegram accounts"
+```
+
+### Billy pilot helper
+
+```bash
+python scripts/billy_pilot_capture.py \
+  --kind decision \
+  --text "Use service-based gateway restart as the default OpenClaw recovery path" \
+  --source "Billy pilot"
 ```
 
 ## Agent operating guidance
