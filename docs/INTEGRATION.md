@@ -39,13 +39,27 @@ python toolkit.py skill-draft \
 python toolkit.py skill-promote --slug openclaw-recovery
 ```
 
+### 4. Use the post-task helper when both memory and draft capture are useful
+
+```bash
+python scripts/post_task_capture.py \
+  --memory-type lesson \
+  --memory-text "Service-based gateway restart is the safer default recovery path" \
+  --source "OpenClaw recovery task" \
+  --skill-name "openclaw-recovery" \
+  --skill-description "Recovery workflow after install/update problems" \
+  --skill-step "Check openclaw.json" \
+  --skill-step "Restart gateway" \
+  --skill-step "Verify both Telegram accounts"
+```
+
 ## Other-PC usage model
 
 On another PC:
 1. clone this repo
 2. run `python scripts/bootstrap_local_layout.py`
 3. review local config files
-4. use `toolkit.py` commands as needed
+4. use `toolkit.py` or `scripts/post_task_capture.py` as needed
 
 ## Security note
 

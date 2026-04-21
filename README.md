@@ -38,10 +38,16 @@ python toolkit.py skill-draft --name "openclaw-recovery" --description "Recovery
 python toolkit.py skill-promote --slug openclaw-recovery
 ```
 
+### 5. Use post-task capture when both memory and skill draft are useful
+```bash
+python scripts/post_task_capture.py --memory-type lesson --memory-text "Service-based gateway restart is the safer default recovery path" --source "OpenClaw recovery task"
+```
+
 See also:
 - `docs/QUICKSTART.md`
 - `docs/INSTALL.md`
 - `docs/INTEGRATION.md`
+- `docs/WORKFLOW.md`
 
 ## Current modules
 
@@ -133,8 +139,10 @@ openclaw-agent-toolkit/
     INTEGRATION.md
     OPERATING_MODEL.md
     QUICKSTART.md
+    WORKFLOW.md
   scripts/
     bootstrap_local_layout.py
+    post_task_capture.py
   toolkit.py
   .gitignore
 ```
@@ -153,6 +161,7 @@ openclaw-agent-toolkit/
 - manual promotion helper
 - practical wrapper flow
 - local bootstrap/install flow
+- workflow guidance
 
 ### Phase 3
 - local review helpers
@@ -167,3 +176,4 @@ This repo now contains working local-safe MVPs for:
 - manual skill draft promotion
 - simple wrapper-based usage flow
 - local multi-PC bootstrap/install flow
+- post-task workflow helper
