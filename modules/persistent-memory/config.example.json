@@ -1,0 +1,10 @@
+{
+  "workspaceMemoryDir": "C:/Users/<USER>/.openclaw/workspace/memory",
+  "longTermMemoryFile": "C:/Users/<USER>/.openclaw/workspace/MEMORY.md",
+  "captureRules": {
+    "storeDecisions": true,
+    "storePreferences": true,
+    "storeProjectState": true,
+    "storeSecrets": false
+  }
+}

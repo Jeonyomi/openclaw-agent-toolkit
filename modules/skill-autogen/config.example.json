@@ -1,0 +1,11 @@
+{
+  "draftOutputDir": "C:/Users/<USER>/.openclaw/skills-drafts",
+  "minStepsForDraft": 3,
+  "requireManualPromotion": true,
+  "filters": {
+    "allowRepeatedOps": true,
+    "allowRecoveryPatterns": true,
+    "allowProjectSpecificDrafts": true,
+    "excludeSecrets": true
+  }
+}

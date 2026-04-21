@@ -1,0 +1,26 @@
+# Local configs
+*.local.json
+*.local.yaml
+*.local.yml
+
+# Generated drafts / outputs
+skills-drafts/
+output/
+reports/
+logs/
+
+# Secrets / env
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python / Node
+__pycache__/
+*.pyc
+node_modules/
