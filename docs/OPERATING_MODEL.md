@@ -36,3 +36,13 @@
 2. draft generated locally
 3. human reviews draft
 4. approved draft promoted to active `skills/`
+
+## Promotion helper
+
+A local helper can move a reviewed draft into the live skills directory:
+
+```bash
+python modules/skill-autogen/scripts/promote_skill_draft.py --slug <skill-slug>
+```
+
+Use `--copy` if you want to preserve the original draft while testing the live version.

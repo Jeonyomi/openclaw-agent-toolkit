@@ -8,6 +8,7 @@ This repo is designed to provide **portable, update-independent agent enhancemen
 
 1. **Persistent memory helpers**
 2. **Automatic skill-draft generation after problem solving**
+3. **Manual promotion workflow for safe skill activation**
 
 The design assumes:
 - OpenClaw core should remain untouched
@@ -115,12 +116,16 @@ openclaw-agent-toolkit/
 ### Phase 2
 - persistent memory helper implementation
 - skill draft generator implementation
+- manual promotion helper
 
 ### Phase 3
-- optional promotion workflow
 - local review helpers
 - quality filters and dedupe
+- optional wrappers/hooks for practical OpenClaw workflows
 
 ## Status
 
-This repo is currently a secure bootstrap skeleton for multi-PC OpenClaw agent enhancements.
+This repo now contains working local-safe MVPs for:
+- persistent memory draft capture
+- skill draft generation
+- manual skill draft promotion
