@@ -21,6 +21,24 @@ Use:
 python toolkit.py memory-capture --type decision --text "..." --source "..."
 ```
 
+If the outcome is a structured operational decision, prefer:
+
+```bash
+python toolkit.py decision-capture --what "..." --why "..." --how "..." --source "..."
+```
+
+If the outcome is an operational failure / issue worth preserving, prefer:
+
+```bash
+python toolkit.py incident-capture --title "..." --symptom "..." --resolution "..." --source "..."
+```
+
+Before risky debugging/recovery work, optionally gather evidence first:
+
+```bash
+python toolkit.py evidence-brief --query "..."
+```
+
 ### 3. Only generate a skill draft when repetition value is clear
 Use:
 

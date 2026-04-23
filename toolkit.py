@@ -7,6 +7,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 PERSISTENT_MEMORY = ROOT / 'modules' / 'persistent-memory' / 'scripts' / 'memory_capture.py'
+DECISION_CAPTURE = ROOT / 'modules' / 'persistent-memory' / 'scripts' / 'decision_capture.py'
+INCIDENT_CAPTURE = ROOT / 'modules' / 'persistent-memory' / 'scripts' / 'incident_capture.py'
+EVIDENCE_BRIEF = ROOT / 'modules' / 'persistent-memory' / 'scripts' / 'evidence_brief.py'
 RECALL_CANDIDATE = ROOT / 'modules' / 'persistent-memory' / 'scripts' / 'recall_candidate.py'
 SKILL_DRAFT = ROOT / 'modules' / 'skill-autogen' / 'scripts' / 'generate_skill_draft.py'
 REFRESH_DRAFT = ROOT / 'modules' / 'skill-autogen' / 'scripts' / 'refresh_skill_draft.py'
@@ -29,6 +32,34 @@ def main() -> int:
     mem.add_argument('--output-dir', default='')
     mem.add_argument('--allow-procedural', action='store_true')
     mem.add_argument('--allow-transient', action='store_true')
+
+    decision = sub.add_parser('decision-capture', help='Capture a structured decision record')
+    decision.add_argument('--what', required=True)
+    decision.add_argument('--why', required=True)
+    decision.add_argument('--how', required=True)
+    decision.add_argument('--outcome', default='')
+    decision.add_argument('--source', default='')
+    decision.add_argument('--tag', action='append', default=[])
+    decision.add_argument('--related-skill', action='append', default=[])
+    decision.add_argument('--related-project', action='append', default=[])
+    decision.add_argument('--output-dir', default='')
+
+    incident = sub.add_parser('incident-capture', help='Capture a structured incident record')
+    incident.add_argument('--title', required=True)
+    incident.add_argument('--symptom', action='append', default=[])
+    incident.add_argument('--impact', default='')
+    incident.add_argument('--cause', default='')
+    incident.add_argument('--resolution', default='')
+    incident.add_argument('--source', default='')
+    incident.add_argument('--severity', default='medium', choices=['low', 'medium', 'high', 'critical'])
+    incident.add_argument('--related-decision', action='append', default=[])
+    incident.add_argument('--related-skill', action='append', default=[])
+    incident.add_argument('--output-dir', default='')
+
+    evidence = sub.add_parser('evidence-brief', help='Summarize related decisions/incidents/memory/skills before acting')
+    evidence.add_argument('--query', required=True)
+    evidence.add_argument('--root', default='')
+    evidence.add_argument('--limit', type=int, default=5)
 
     recall = sub.add_parser('recall-candidate', help='Promote curated memory candidates into workspace memory files')
     recall.add_argument('--candidate-file', required=True)
@@ -75,6 +106,48 @@ def main() -> int:
             cmd += ['--allow-procedural']
         if args.allow_transient:
             cmd += ['--allow-transient']
+        return run(cmd)
+
+    if args.command == 'decision-capture':
+        cmd = [str(DECISION_CAPTURE), '--what', args.what, '--why', args.why, '--how', args.how]
+        if args.outcome:
+            cmd += ['--outcome', args.outcome]
+        if args.source:
+            cmd += ['--source', args.source]
+        for v in args.tag:
+            cmd += ['--tag', v]
+        for v in args.related_skill:
+            cmd += ['--related-skill', v]
+        for v in args.related_project:
+            cmd += ['--related-project', v]
+        if args.output_dir:
+            cmd += ['--output-dir', args.output_dir]
+        return run(cmd)
+
+    if args.command == 'incident-capture':
+        cmd = [str(INCIDENT_CAPTURE), '--title', args.title, '--severity', args.severity]
+        for v in args.symptom:
+            cmd += ['--symptom', v]
+        if args.impact:
+            cmd += ['--impact', args.impact]
+        if args.cause:
+            cmd += ['--cause', args.cause]
+        if args.resolution:
+            cmd += ['--resolution', args.resolution]
+        if args.source:
+            cmd += ['--source', args.source]
+        for v in args.related_decision:
+            cmd += ['--related-decision', v]
+        for v in args.related_skill:
+            cmd += ['--related-skill', v]
+        if args.output_dir:
+            cmd += ['--output-dir', args.output_dir]
+        return run(cmd)
+
+    if args.command == 'evidence-brief':
+        cmd = [str(EVIDENCE_BRIEF), '--query', args.query, '--limit', str(args.limit)]
+        if args.root:
+            cmd += ['--root', args.root]
         return run(cmd)
 
     if args.command == 'recall-candidate':

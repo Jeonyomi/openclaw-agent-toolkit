@@ -195,6 +195,12 @@ python scripts/validate_toolkit_outputs.py
   - create daily + curated memory candidates
   - rejects secret-like text
   - now rejects procedural/transient memory by default
+- `toolkit.py decision-capture`
+  - create a structured decision record (`what / why / how / outcome`)
+- `toolkit.py incident-capture`
+  - create a structured incident record (`symptoms / cause / resolution / related items`)
+- `toolkit.py evidence-brief`
+  - summarize related decisions, incidents, memory files, and skills before acting
 - `toolkit.py recall-candidate`
   - preview curated memory candidates
   - optionally apply reviewed candidates into workspace memory files
