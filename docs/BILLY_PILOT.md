@@ -81,6 +81,30 @@ python toolkit.py recall-candidate \
   --apply
 ```
 
+Capture an important operational decision:
+
+```bash
+python toolkit.py decision-capture \
+  --what "Use service-based gateway restart as the default recovery path" \
+  --why "In-process restart can appear hung during drain/shutdown timeout" \
+  --how "Prefer service-based restart in docs and operator workflow"
+```
+
+Capture an incident after debugging/recovery work:
+
+```bash
+python toolkit.py incident-capture \
+  --title "OpenClaw in-process restart looked hung" \
+  --symptom "Gateway appeared stuck during shutdown" \
+  --resolution "Use service-based gateway restart instead"
+```
+
+Gather prior evidence before risky work:
+
+```bash
+python toolkit.py evidence-brief --query "gateway restart recovery"
+```
+
 Refresh an existing skill with a new lesson:
 
 ```bash

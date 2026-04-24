@@ -1,12 +1,20 @@
 # QUICKSTART
 
+This guide shows the fastest useful path to running `openclaw-agent-toolkit` locally.
+
 ## 1. Bootstrap local layout
 
 ```bash
 python scripts/bootstrap_local_layout.py
 ```
 
-## 2. Capture durable memory
+This prepares the basic local folder structure under `~/.openclaw/`.
+
+---
+
+## 2. Capture a durable memory
+
+Use this when the outcome is a stable fact worth keeping.
 
 ```bash
 python toolkit.py memory-capture \
@@ -15,7 +23,47 @@ python toolkit.py memory-capture \
   --source "OpenClaw recovery work"
 ```
 
-## 3. Generate a draft skill
+---
+
+## 3. Capture a structured decision
+
+Use this when the important thing is **what was decided and why**.
+
+```bash
+python toolkit.py decision-capture \
+  --what "Use service-based gateway restart as the default recovery path" \
+  --why "In-process restart can appear hung during drain/shutdown timeout" \
+  --how "Prefer service-based restart in docs and operator workflow"
+```
+
+---
+
+## 4. Capture an incident
+
+Use this when the important thing is **what went wrong and how it was fixed**.
+
+```bash
+python toolkit.py incident-capture \
+  --title "OpenClaw in-process restart looked hung" \
+  --symptom "Gateway appeared stuck during shutdown" \
+  --resolution "Use service-based gateway restart instead"
+```
+
+---
+
+## 5. Gather evidence before risky work
+
+Use this before debugging, recovery, or repeated operational work.
+
+```bash
+python toolkit.py evidence-brief --query "gateway restart recovery"
+```
+
+---
+
+## 6. Generate a draft skill
+
+Use this when the result is a workflow worth reusing.
 
 ```bash
 python toolkit.py skill-draft \
@@ -27,7 +75,9 @@ python toolkit.py skill-draft \
   --step "Verify both Telegram accounts"
 ```
 
-## 4. Refresh an existing skill draft from new lessons
+---
+
+## 7. Refresh an existing skill draft from new lessons
 
 ```bash
 python toolkit.py skill-refresh \
@@ -35,14 +85,18 @@ python toolkit.py skill-refresh \
   --lesson "Prefer service-based gateway restart as the default path unless a narrower recovery step is explicitly required"
 ```
 
-## 5. Preview curated memory candidates
+---
+
+## 8. Preview curated memory candidates
 
 ```bash
 python toolkit.py recall-candidate \
   --candidate-file modules/persistent-memory/output/curated-memory-candidate-YYYY-MM-DD.md
 ```
 
-## 6. Apply curated memory candidates into workspace files
+---
+
+## 9. Apply curated memory candidates into workspace files
 
 ```bash
 python toolkit.py recall-candidate \
@@ -52,21 +106,30 @@ python toolkit.py recall-candidate \
   --apply
 ```
 
-## 7. Validate outputs
+---
+
+## 10. Validate outputs
 
 ```bash
 python scripts/validate_toolkit_outputs.py
 ```
 
-## 8. Promote a reviewed draft
+---
+
+## 11. Promote a reviewed draft
 
 ```bash
 python toolkit.py skill-promote --slug openclaw-recovery
 ```
 
+---
+
 ## Notes
+
 - outputs are local-only by default
 - promotion is manual
 - durable memory should stay factual and long-lived
+- decisions should record `what / why / how`
+- incidents should capture symptoms and resolution
 - reusable procedures should usually become skills, not memory entries
 - do not place secrets in text fields
