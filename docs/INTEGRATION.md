@@ -124,7 +124,7 @@ On another PC:
 3. review local config files
 4. use `toolkit.py` commands directly as needed
 5. copy the generic integration rules from `docs/AGENT_RULE_SNIPPETS.md` into local agent instruction files if you want behavior-level integration
-6. if you want Billy-style post-task behavior, add a local wrapper or equivalent scripted command path
+6. if you want automatic post-task capture behavior, add a local wrapper or equivalent scripted command path
 7. validate one real end-to-end path on that machine:
    - capture durable memory
    - inspect curated candidate output

@@ -76,7 +76,7 @@ Depending on your setup, you can:
 If you are setting this up for a different OpenClaw agent on another PC:
 - reuse the same repo
 - keep configs and outputs machine-local
-- do not assume Billy-specific wording is required
+- do not assume any agent-specific wording is required
 - use the generic command set first:
   - `memory-capture`
   - `decision-capture`

@@ -54,7 +54,7 @@ powershell -ExecutionPolicy Bypass -File .\billy_post_task_capture.ps1 -Kind les
 6. Keep durable memory factual and long-lived; do not store transient progress logs or TODO state
 7. Put reusable procedures and runbooks into skill drafts rather than memory
 
-## Recommended operational loop for Billy
+## Recommended operational loop
 
 After meaningful work:
 
@@ -145,9 +145,9 @@ python scripts/bootstrap_local_layout.py
 - 1 to 2 weeks
 
 ## Success criteria
-- Billy-generated memory entries are actually reusable
-- Billy-generated drafts are selective rather than noisy
-- at least a few pilot outputs are worth keeping/promoting
+- agent-generated memory entries are actually reusable
+- generated drafts are selective rather than noisy
+- at least a few pilot outputs are worth keeping or promoting
 
 ## Review command
 
@@ -160,4 +160,4 @@ python scripts/validate_toolkit_outputs.py
 If another OpenClaw agent should follow the same pattern, use the generic snippets in:
 - `docs/AGENT_RULE_SNIPPETS.md`
 
-For non-Billy agents, prefer the generic toolkit rules rather than Billy-specific wording.
+For new setups, prefer the generic toolkit rules unless you intentionally want agent-specific wording.
