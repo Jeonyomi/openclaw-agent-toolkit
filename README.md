@@ -133,7 +133,7 @@ python scripts/bootstrap_local_layout.py
 4. Decide how the local agent will call the toolkit:
    - direct `toolkit.py` commands
    - `scripts/post_task_capture.py`
-   - a local wrapper/alias for Billy-like post-task behavior
+   - a local wrapper or alias for automatic post-task capture behavior
 5. Copy the generic rules from `docs/AGENT_RULE_SNIPPETS.md` into the local agent instruction file
 6. Run one real validation flow on that machine
 7. Only then treat the PC as pilot-operational
