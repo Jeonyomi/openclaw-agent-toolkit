@@ -124,8 +124,18 @@ On another PC:
 3. review local config files
 4. use `toolkit.py` commands directly as needed
 5. copy the generic integration rules from `docs/AGENT_RULE_SNIPPETS.md` into local agent instruction files if you want behavior-level integration
+6. if you want Billy-style post-task behavior, add a local wrapper or equivalent scripted command path
+7. validate one real end-to-end path on that machine:
+   - capture durable memory
+   - inspect curated candidate output
+   - apply reviewed candidate into local workspace memory files
 
 This works even if the other agent is not Billy.
+
+### Important distinction
+
+Pushing docs to GitHub updates shared guidance, but it does **not** by itself activate another PC.
+A second PC becomes operational only when the local repo, local instructions, local wrapper/commands, and local validation are all in place.
 
 ---
 

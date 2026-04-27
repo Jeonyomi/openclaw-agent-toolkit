@@ -50,6 +50,8 @@ When a meaningful task is completed, the agent should normally do both of the fo
 
 ## Snippet B — Generic post-task command usage
 
+Note: documentation updates alone do not activate another PC. The machine still needs local commands or a wrapper plus one successful validation run.
+
 ```md
 ### Toolkit usage after meaningful work
 Use the local toolkit wrapper after meaningful completed work.

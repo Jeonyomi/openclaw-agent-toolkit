@@ -32,16 +32,16 @@ The pilot should remain:
 
 ## Preferred command
 
-```bash
-python scripts/billy_pilot_capture.py \
-  --kind decision \
-  --text "Use service-based gateway restart as the default OpenClaw recovery path" \
-  --source "Billy pilot" \
-  --skill-name "openclaw-recovery" \
-  --skill-description "Recovery workflow after install/update or broken gateway state" \
-  --skill-step "Check openclaw.json" \
-  --skill-step "Restart gateway" \
-  --skill-step "Verify both Telegram accounts"
+For Billy's local wrapper, prefer the workspace launcher:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\billy_post_task_capture.ps1 -Kind decision-structured -What "Use service-based gateway restart as the default OpenClaw recovery path" -Why "In-process restart can appear hung during drain/shutdown timeout" -How "Prefer service-based restart in docs and operator workflow" -Source "Billy pilot"
+```
+
+For repeatable workflow capture using the legacy memory+skill helper path:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\billy_post_task_capture.ps1 -Kind lesson -Text "Service-based gateway restart is the safer default recovery path" -Source "Billy pilot" -SkillName "openclaw-recovery" -SkillDescription "Recovery workflow after install/update or broken gateway state" -SkillStep "Check openclaw.json" -SkillStep "Restart gateway" -SkillStep "Verify both Telegram accounts"
 ```
 
 ## Billy pilot rules
@@ -112,6 +112,34 @@ python toolkit.py skill-refresh \
   --skill-file ~/.openclaw/workspace/skills/openclaw-recovery/SKILL.md \
   --lesson "Prefer service-based gateway restart as the default path unless a narrower recovery step is explicitly required"
 ```
+
+## Minimum requirements for another PC
+
+Updating this document alone is **not enough** to make another PC operational.
+A second PC needs all of the following:
+
+1. this repo cloned locally
+2. local layout bootstrapped (`python scripts/bootstrap_local_layout.py`)
+3. a local wrapper command or equivalent command sequence available on that machine
+4. the agent's local instruction file updated with pilot rules
+5. a real end-to-end validation run on that machine
+
+### Practical apply checklist for another Billy-like PC
+
+1. Clone or pull `openclaw-agent-toolkit`
+2. Run:
+
+```bash
+python scripts/bootstrap_local_layout.py
+```
+
+3. Add the generic rules from `docs/AGENT_RULE_SNIPPETS.md` into the local agent instruction file
+4. Add a local wrapper or command alias that the agent can call after meaningful work
+5. Validate at least one real flow:
+   - memory capture
+   - curated candidate generation
+   - reviewed apply into local `MEMORY.md` / `memory/YYYY-MM-DD.md`
+6. Only after that should the PC be treated as pilot-operational
 
 ## Suggested pilot duration
 - 1 to 2 weeks
