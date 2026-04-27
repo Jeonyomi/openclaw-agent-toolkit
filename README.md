@@ -153,9 +153,9 @@ Recommended starting commands:
 - `skill-refresh`
 - `recall-candidate`
 
-#### Mode B — Billy-like operation on another PC
+#### Mode B — Automatic post-task capture mode
 
-Use this when you want the other machine to behave like Billy after meaningful work.
+Use this when you want the agent to automatically capture durable memory after meaningful completed work instead of relying only on manual command use.
 
 Minimum requirements:
 - toolkit repo present locally
@@ -447,7 +447,7 @@ This is enough to run the toolkit as a lightweight local memory + skill system e
 - `scripts/post_task_capture.py`
   - capture memory first, then optional skill draft
 - `scripts/billy_pilot_capture.py`
-  - Billy-friendly wrapper over post-task capture
+  - example agent-specific wrapper over post-task capture
 - `scripts/validate_toolkit_outputs.py`
   - check for obvious quality/safety problems before promotion
 - `scripts/bootstrap_local_layout.py`
