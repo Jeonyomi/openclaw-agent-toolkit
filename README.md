@@ -142,7 +142,7 @@ python scripts/bootstrap_local_layout.py
 
 #### Mode A — Generic agent on another PC
 
-Use this when the other machine is not specifically trying to copy Billy's behavior.
+Use this when you want the agent to call toolkit commands directly as needed.
 
 Recommended starting commands:
 - `memory-capture`
