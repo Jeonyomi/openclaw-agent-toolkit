@@ -414,7 +414,7 @@ python toolkit.py recall-candidate --candidate-file modules/persistent-memory/ou
 python scripts/validate_toolkit_outputs.py
 ```
 
-This is enough to run the toolkit as a lightweight local memory + skill system even if you never use Billy-specific helpers.
+This is enough to run the toolkit as a lightweight local memory + skill system even if you never use any agent-specific helper or wrapper.
 
 ---
 
