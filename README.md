@@ -99,6 +99,71 @@ This means:
 
 ---
 
+## Fastest path to real operation on another PC
+
+If your goal is not just to read the docs but to make another OpenClaw agent PC actually usable, follow this path.
+
+### What “operational” means here
+
+A PC should only be treated as operational after all of these are true:
+- the repo is cloned locally
+- local layout has been bootstrapped
+- the local agent has rules telling it when to use the toolkit
+- the machine has a usable command path or wrapper for post-task capture
+- at least one real end-to-end validation run has succeeded
+  - capture memory
+  - generate curated candidate output
+  - apply reviewed memory into local workspace files
+
+### Important distinction
+
+Updating docs in GitHub helps another user understand the process, but it does **not** by itself activate another PC.
+A second PC becomes operational only when its own local repo, local instructions, local command/wrapper path, and local validation are all in place.
+
+### 30-minute onboarding path for another PC
+
+1. Clone this repo on that machine
+2. Review `docs/SECURITY.md`
+3. Run:
+
+```bash
+python scripts/bootstrap_local_layout.py
+```
+
+4. Decide how the local agent will call the toolkit:
+   - direct `toolkit.py` commands
+   - `scripts/post_task_capture.py`
+   - a local wrapper/alias for Billy-like post-task behavior
+5. Copy the generic rules from `docs/AGENT_RULE_SNIPPETS.md` into the local agent instruction file
+6. Run one real validation flow on that machine
+7. Only then treat the PC as pilot-operational
+
+### Two common onboarding modes
+
+#### Mode A — Generic agent on another PC
+
+Use this when the other machine is not specifically trying to copy Billy's behavior.
+
+Recommended starting commands:
+- `memory-capture`
+- `decision-capture`
+- `incident-capture`
+- `evidence-brief`
+- `skill-draft`
+- `skill-refresh`
+- `recall-candidate`
+
+#### Mode B — Billy-like operation on another PC
+
+Use this when you want the other machine to behave like Billy after meaningful work.
+
+Minimum requirements:
+- toolkit repo present locally
+- local agent rules updated
+- local wrapper or equivalent scripted command path available
+- reviewed apply flow into that machine's `MEMORY.md` and `memory/YYYY-MM-DD.md`
+- one successful end-to-end validation run
+
 ## Quick start
 
 ### 1. Bootstrap local layout
@@ -223,7 +288,7 @@ Use the smallest fitting capture:
 
 If you want to use this repo on another PC or with another OpenClaw agent, this is the recommended path.
 
-## Installation steps
+## Installation + activation steps
 
 1. Clone the repo
 2. Review `docs/SECURITY.md`
@@ -248,7 +313,54 @@ python scripts/bootstrap_local_layout.py
 
 into your local agent instruction file if you want behavior-level integration.
 
+7. Choose a local execution path for post-task usage:
+- call `toolkit.py` directly
+- call `scripts/post_task_capture.py`
+- add a local wrapper or alias for your preferred operating style
+
+8. Validate one real end-to-end path on that machine:
+- capture a durable memory or decision
+- confirm candidate output was generated
+- preview with `recall-candidate`
+- apply into local workspace memory files
+
+9. Only after that should the machine be treated as operational.
+
 ---
+
+## First validation flow for another PC
+
+If you want a concrete first-run check, this is the simplest useful validation path.
+
+### 1. Create one durable memory candidate
+
+```bash
+python toolkit.py memory-capture --type preference --text "The user prefers short operational updates." --source "first onboarding validation"
+```
+
+### 2. Preview the generated curated candidate
+
+```bash
+python toolkit.py recall-candidate --candidate-file modules/persistent-memory/output/curated-memory-candidate-YYYY-MM-DD.md
+```
+
+### 3. Apply it into local workspace files after review
+
+```bash
+python toolkit.py recall-candidate \
+  --candidate-file modules/persistent-memory/output/curated-memory-candidate-YYYY-MM-DD.md \
+  --memory-md ~/.openclaw/workspace/MEMORY.md \
+  --daily-memory ~/.openclaw/workspace/memory/YYYY-MM-DD.md \
+  --apply
+```
+
+### 4. Confirm the result
+
+Check that both of these now reflect the reviewed entry:
+- `~/.openclaw/workspace/MEMORY.md`
+- `~/.openclaw/workspace/memory/YYYY-MM-DD.md`
+
+If this flow works, the machine is no longer just installed — it is actually wired for basic toolkit operation.
 
 ## Minimal usage guide for another user
 
