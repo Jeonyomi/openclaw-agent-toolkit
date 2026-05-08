@@ -37,6 +37,31 @@
 3. human reviews draft
 4. approved draft promoted to active `skills/`
 
+## Operating gate
+
+The toolkit is intended for **meaningful operational work**, not every tiny action.
+
+### Use it when
+- a durable fact was learned
+- an operational decision was made
+- there was visible failure / degradation / recovery
+- project state materially changed
+- a workflow is repeatable enough to become a skill or runbook
+
+### Skip it when
+- the work is trivial
+- the content is mostly transient progress chatter
+- the saved artifact would be noisier than its future value
+
+### Preferred capture shape
+- durable facts -> memory capture
+- decisions -> decision capture
+- failures / recoveries -> incident capture
+- repeatable procedures -> skill draft / skill refresh
+
+### Quality principle
+The toolkit should improve long-term operating quality by reducing reset cost and preserving reusable knowledge. If a capture would not help a future operator, it should usually be skipped.
+
 ## Promotion helper
 
 A local helper can move a reviewed draft into the live skills directory:

@@ -63,6 +63,41 @@ After meaningful work:
 3. **If curated memory candidates have accumulated** → review with `recall-candidate` preview first, then `--apply`
 4. **Before promoting any draft** → run validation
 
+## Operating standard v1
+
+Use the pilot with a small decision gate, not as a blanket "capture everything" rule.
+
+### Apply the toolkit by default when work is meaningful
+Treat a task as toolkit-worthy when any of these are true:
+- an operational decision was made
+- project state materially changed
+- there was failure / outage / recovery / debugging lesson
+- the workflow is likely to repeat
+- the result would matter again after a future session reset
+
+### Skip the toolkit when work is trivial/noisy
+Skip capture when all of these are true:
+- the work is trivial or one-off
+- there is no durable future value
+- the content is mostly chatter or a tiny cosmetic change
+- saving it would create more memory noise than future value
+
+### Choose the smallest fitting capture
+- durable fact → `memory-capture`
+- important operational decision → `decision-capture`
+- failure / degraded behavior / recovery → `incident-capture`
+- repeatable workflow → `skill-draft` or `skill-refresh`
+- uncertain but still useful → minimal project-state memory capture only
+
+### Before risky repeated ops
+Run `evidence-brief` first when prior incidents, decisions, or skill drafts are likely relevant.
+
+### Monitoring goals
+Watch for:
+- **under-capture**: meaningful work ends without a durable record
+- **over-capture**: trivial work creates noisy memory
+- **wrong-shape capture**: an incident/workflow is stored as flat memory when it should have been an incident or skill draft
+
 ### Examples
 
 Preview curated memory candidates:
